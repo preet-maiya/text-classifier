@@ -1,0 +1,105 @@
+(lp0
+(dp1
+S'class'
+p2
+S'greeting'
+p3
+sS'sentence'
+p4
+S'how are you?'
+p5
+sa(dp6
+g2
+g3
+sg4
+S'how is your day?'
+p7
+sa(dp8
+g2
+g3
+sg4
+S'good day'
+p9
+sa(dp10
+g2
+g3
+sg4
+S'how is it going today?'
+p11
+sa(dp12
+g2
+S'goodbye'
+p13
+sg4
+S'have a nice day'
+p14
+sa(dp15
+g2
+g13
+sg4
+S'see you later'
+p16
+sa(dp17
+g2
+g13
+sg4
+g14
+sa(dp18
+g2
+g13
+sg4
+S'talk to you soon'
+p19
+sa(dp20
+g2
+S'sandwich'
+p21
+sg4
+S'make me a sandwich'
+p22
+sa(dp23
+g2
+g21
+sg4
+S'can you make a sandwich?'
+p24
+sa(dp25
+g2
+g21
+sg4
+S'having a sandwich today?'
+p26
+sa(dp27
+g2
+g21
+sg4
+S"what's for lunch?"
+p28
+sa(dp29
+S'class'
+p30
+S'offensive'
+p31
+sS'sentence'
+p32
+S'Fuck off...'
+p33
+sa(dp34
+S'class'
+p35
+S'offensive'
+p36
+sS'sentence'
+p37
+S'Shitty barf'
+p38
+sa(dp39
+S'class'
+p40
+S'offensive'
+p41
+sS'sentence'
+p42
+S'Bitch, get out.'
+p43
+sa.
