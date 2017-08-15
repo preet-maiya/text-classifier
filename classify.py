@@ -6,7 +6,7 @@ training_data = pickle.load(open("training_data.pkl", 'rb'))
 stemmed_words = {}
 word_classes = {}
 stemmer = SnowballStemmer("english")
-print training_data
+#print training_data
 for c in training_data:
     word_classes[c['class']] = []
 
