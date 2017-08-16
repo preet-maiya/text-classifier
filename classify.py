@@ -1,49 +1,58 @@
+from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.stem.snowball import SnowballStemmer
-import string
+from nltk.corpus import stopwords
 import pickle
+import string
 
 training_data = pickle.load(open("training_data.pkl", 'rb'))
-stemmed_words = {}
-word_classes = {}
-stemmer = SnowballStemmer("english")
-#print training_data
-for c in training_data:
-    word_classes[c['class']] = []
 
+classes = []
 for data in training_data:
-    data["sentence"] = data['sentence'].translate(string.maketrans("", ""), string.punctuation)
-    words = data['sentence'].split(" ")
+    if data['class'] not in classes:
+        classes.append(data['class'])
+
+stemmer = SnowballStemmer('english')
+tfidf_vectorizer = TfidfVectorizer(min_df = 1)
+tfidf_data = []
+for cl in classes:
+    sentences = []
+    for data in training_data:
+        if data['class'] == cl:
+            data["sentence"] = data['sentence'].translate(string.maketrans("", ""), string.punctuation)
+            words = data['sentence'].split()
+            w = []
+            for word in words:
+                w.append(stemmer.stem(word))
+            sentence = ' '.join(w)
+            sentences.append(data['sentence'])
+    tfidf_matrix = tfidf_vectorizer.fit_transform(sentences)
+    dictionary = tfidf_vectorizer.vocabulary_
+    tfidf_data.append({'class':cl, 'matrix':tfidf_matrix, 'word_dict':dictionary})
+
+def clean_and_tokenize(sentence):
+    sentence = sentence.translate(string.maketrans("", ""), string.punctuation)
+    words = sentence.split()
+    stop_words = stopwords.words('english')
+    w = []
     for word in words:
-        stemmed_word = stemmer.stem(word)
-        if stemmed_word not in stemmed_words:
-            stemmed_words[stemmed_word] = 1
-        else:
-            stemmed_words[stemmed_word] += 1
-        word_classes[data['class']].extend([stemmed_word])
+        if word not in stop_words:
+            word = stemmer.stem(word)
+            w.append(word.lower())
+    return w
 
-print stemmed_words
-print word_classes
-
-def classify(sentence, class_name, show_details = True):
-    words = sentence.translate(string.maketrans("", ""), string.punctuation).split(" ")
-    ctr = 0
+sentence = raw_input('Enter a sentence: ')
+words = clean_and_tokenize(sentence)
+final_score = 0
+cl = ''
+for data in tfidf_data:
+    score = 0
+    tf_words = data['word_dict'].keys()
     for word in words:
-        if stemmer.stem(word.lower()) in word_classes[class_name]:
-            ctr += (1/float(stemmed_words[stemmer.stem(word.lower())]))
-            if show_details:
-                print '\tword: ', word
+        if word in tf_words:
+            score = score + data['word_dict'][word]
+    if final_score < score:
+        final_score = score
+        cl = data['class']
 
-    return ctr
-
-sentence = raw_input("Write a sentence: ")
-#sentence = "How are you?"
-max = 0
-name ="None"
-for c in word_classes.keys():
-    v = classify(sentence, c, show_details = False)
-    if v > max:
-        max = v
-        name = c
-
-print "Class: ", name
-print "Score: ", max
+print 'Class: ',cl
+print 'Score: ',final_score
